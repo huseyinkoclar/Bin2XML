@@ -38,6 +38,12 @@ struct tags
     char weight[32];
 };
 
+unsigned int reverseEndian(unsigned int val)
+{
+    val = ((val << 8) & 0xFF00FF00) | ((val >> 8) & 0xFF00FF);
+    return((unsigned int) val << 16) | ((unsigned int) val >> 16);
+}
+
 int num = 50;
 
 int main();
@@ -48,15 +54,20 @@ struct tags *readFile1(char path[]);
 
 int main(int argc, char const argv[]) {
     printf("succesfull");
+    //char inputfile[10];
+    //scanf("&s", inputfile);
+    //printf("%s", inputfile);
 
     FILE *fp = fopen("Bin2XML.xml", "w");
     struct record *records = readFile("./records.dat");
     struct tags *tag = readFile1("./records.dat");
     fprintf(fp, "%s","<records>\n");
     for(int i = 1; i < 51; i++){
+        unsigned int reversedIncomeLevel = (unsigned int) reverseEndian(records[i].income_level);
+        unsigned int reversedExpenditure = (unsigned int) reverseEndian(records[i].expenditure);
         fprintf(fp, "\t<row id = %c%d%c>\n", 34,(i),34);
         fprintf(fp, "\t\t<%s>%s</%s>\n\t\t<%s>%s</%s>\n\t\t<%s>%c</%s>\n\t\t<%s>%s</%s>\n"
-        "\t\t<%s>%s</%s>\n\t\t<%s>%s</%s>\n\t\t<%s>%s</%s>\n\t\t<%s>%u</%s>\n\t\t<%s>%u</%s>\n"
+        "\t\t<%s>%s</%s>\n\t\t<%s>%s</%s>\n\t\t<%s>%s</%s>\n\t\t<%s%s%u>%u</%s>\n\t\t<%s%s%u>%u</%s>\n"
         "\t\t<%s>%s</%s>\n\t\t<%s>%s</%s>\n\t\t<%s>%f</%s>\n\t\t<%s>%u</%s>\n",
         tag->name, records[i].name, tag->name,
         tag->surname, records[i].surname, tag->surname,
@@ -65,8 +76,8 @@ int main(int argc, char const argv[]) {
         tag->phone_number, records[i].phone_number, tag->phone_number,
         tag->address, records[i].address, tag->address,
         tag->level_of_education, records[i].level_of_education, tag->level_of_education,
-        tag->income_level, records[i].income_level, tag->income_level,
-        tag->expenditure, records[i].expenditure, tag->expenditure,
+        tag->income_level, " bigEnd=", reversedIncomeLevel, records[i].income_level, tag->income_level,
+        tag->expenditure, " bigEnd=", records[i].expenditure, reversedExpenditure, tag->expenditure,
         tag->currency_unit, records[i].currency_unit, tag->currency_unit,
         tag->currentMood, records[i].currentMood, tag->currentMood,
         tag->height, records[i].height, tag->height,
