@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+//struct for record
 struct record
 {
     char name[64];      //utf16
@@ -21,6 +22,7 @@ struct record
     unsigned int weight;
 };
 
+//struct for tag all string
 struct tags
 {
     char name[32];      //utf16
@@ -38,6 +40,7 @@ struct tags
     char weight[32];
 };
 
+//function that converts little endian and big endian
 unsigned int reverseEndian(unsigned int val)
 {
     val = ((val << 8) & 0xFF00FF00) | ((val >> 8) & 0xFF00FF);
@@ -55,6 +58,7 @@ struct tags *readFile1(char path[]);
 int main(int argc, char* argv[]) {
     printf("succesfull");
 
+    //create xml file
     FILE *fp = fopen(argv[2], "w");
     fprintf(fp, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
     struct record *records = readFile(argv[1]);
@@ -84,7 +88,6 @@ int main(int argc, char* argv[]) {
         fprintf(fp, "\t\t</row>\n");
     }
     fprintf(fp, "\t%s", "</records>");
-    printf("!!!");
     return 0;    
 }
 
